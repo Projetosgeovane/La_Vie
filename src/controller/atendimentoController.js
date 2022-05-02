@@ -1,4 +1,4 @@
-const Atendimentos = require('../model/Atendimentos');
+const { Atendimentos, Paciente, Psicologos } = require('../model/');
 
 
 
@@ -6,7 +6,10 @@ const atendimentoController = {
 
     async buscarAtendimento(req, res) {
         try {
-            const atendimentos = await Atendimentos.findAll();
+            const atendimentos = await Atendimentos.findAll({
+                include: [Paciente, Psicologos]
+                
+            });
             res.json(atendimentos);
         } catch (error) {
             console.error('Erro de busca');
@@ -16,7 +19,12 @@ const atendimentoController = {
     async buscarAtendimentoId(req, res) {
         try {
             const { id } = req.params;
-            const atendimentos = await Atendimentos.findByPk(id)
+            const atendimentos = await Atendimentos.findByPk(id,{
+                include: [Paciente, Psicologos]
+            });
+            if (atendimentos == null) {
+                return res.status(404).json('Id não encontrado');
+            }
             res.json(atendimentos);
         } catch (error) {
             console.error('Id não encontrado');
@@ -26,23 +34,20 @@ const atendimentoController = {
 
     async cadastrarAtendimento(req, res) {
         try {
-            const { data_atendimento, observacao, paciente_id, psicologos_id} = req.body;
+            const { data_atendimento, observacao, paciente_id, psicologos_id } = req.body;
             const novoAtendimento = await Atendimentos.create({
                 data_atendimento,
                 observacao,
                 paciente_id,
                 psicologos_id,
-                
+
             });
 
-            // const psicologos = await Psicologos.findByPk(psicologos_id);
-            // await novoPaciente.setPsicologos(psicologos)
+            
             return res.status(201).json(novoAtendimento)
 
         } catch (error) {
-            console.log('Falha ao cadastrar paciente');
-            console.error(error);
-            return res.status(400).json('Falha ao cadastrar paciente');
+            return res.status(400).json('Falha ao cadastrar atendimento');
         }
     },
 

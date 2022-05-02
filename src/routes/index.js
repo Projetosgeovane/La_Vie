@@ -10,11 +10,11 @@ const authLoginValidation = require('../validations/auth/login');
 
 const routes = express.Router();
 
-routes.get('/pacientes', auth, pacienteController.buscarPacientes);
-routes.get('/pacientes/:id', pacienteController.buscarPacienteId);
-routes.post('/pacientes', pacienteCadastroValidation, pacienteController.cadastrarPaciente);
-routes.put('/pacientes/:id', pacienteController.atualizarPaciente);
-routes.delete('/pacientes/:id', pacienteController.deletarPaciente);
+routes.get('/pacientes', auth, pacienteController.paginacaoBuscarPacientes);
+routes.get('/pacientes/:id',auth, pacienteController.buscarPacienteId);
+routes.post('/pacientes', auth, pacienteCadastroValidation, pacienteController.cadastrarPaciente);
+routes.put('/pacientes/:id', auth, pacienteController.atualizarPaciente);
+routes.delete('/pacientes/:id', auth, pacienteController.deletarPaciente);
 
 routes.get('/psicologos', psicologosController.buscarPsicologos);
 routes.get('/psicologos/:id', psicologosController.buscarPsicologoId);

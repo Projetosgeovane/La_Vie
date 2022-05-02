@@ -20,7 +20,7 @@ const Psicologos = db.define('Psicologos', {
     },
     senha: {
         type: DataTypes.STRING,
-        length: 45,
+        length: 255,
         notNull: true
     },
     apresentacao: {

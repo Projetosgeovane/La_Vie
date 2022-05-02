@@ -10,6 +10,7 @@ const authController = {
         const psicologo = await Psicologos.findOne({
             where: {
                 email,
+                senha
             },
         });
 

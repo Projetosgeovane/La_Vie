@@ -1,21 +1,29 @@
-const bcrypt = require('bcryptjs');
-const Paciente = require('../model/Paciente');
-const Psicologos = require('../model/Psicologos');
+const bcryptjs = require('bcryptjs');
+const { Psicologos, Paciente } = require('../model/');
 
 const psicologosController = {
     async buscarPsicologos(req, res) {
         try {
-            const psicologos = await Psicologos.findAll();
+            const psicologos = await Psicologos.findAll({
+                include: Paciente,
+                attributes: ['nome', 'email', 'apresentacao']
+            });
             res.status(200).json(psicologos);
         } catch (error) {
-
+            return res.status(404).json('Falha ao buscar lista de psicologos');
         }
     },
 
     async buscarPsicologoId(req, res) {
         try {
             const { id } = req.params;
-            const psicologoId = await Psicologos.findByPk(id);
+            const psicologoId = await Psicologos.findByPk(id, {
+                include: Paciente,
+                attributes: ['nome', 'email', 'apresentacao']
+            });
+            if (psicologoId == null) {
+                return res.status(404).json('Id não encontrado');
+            }
             res.json(psicologoId);
         } catch (error) {
             return res.status(404).json('Id não encontrado');
@@ -25,11 +33,11 @@ const psicologosController = {
     async cadastrarPsicologo(req, res) {
         try {
             const { nome, email, senha, apresentacao } = req.body;
-            // const novaSenha = bcrypt.hashSync(senha, 10);
+            const novaSenha = bcryptjs.hashSync(senha, 10);
             const novoPsicologo = await Psicologos.create({
                 nome,
                 email,
-                senha,
+                senha: novaSenha,
                 apresentacao
             });
 
@@ -55,6 +63,9 @@ const psicologosController = {
             }
             );
             const psicologoAtualizado = await Psicologos.findByPk(id);
+            if (psicologoAtualizado == null) {
+                res.status(404).json('Id não encontrado');
+            }
             res.status(201).json(psicologoAtualizado);
 
         } catch (error) {
@@ -72,7 +83,7 @@ const psicologosController = {
             });
             res.json("Psicologo Deletado com sucesso");
         } catch (error) {
-            
+
         }
     }
 

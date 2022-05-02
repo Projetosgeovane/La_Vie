@@ -19,7 +19,7 @@ const Paciente = db.define('Paciente', {
         notNull: true
     },
     idade: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.DATE,
         notNull: true
     }
 
