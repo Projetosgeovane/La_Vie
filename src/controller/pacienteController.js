@@ -85,7 +85,10 @@ const pacienteController = {
         try {
             const { nome, email, idade, psicologos_id } = req.body;
           
-            
+            const psicologos = await Psicologos.findByPk(psicologos_id);
+            if(!psicologos){
+                return res.status(400).json('id do psicologo não encontrado');
+            }
             const novoPaciente = await Paciente.create({
                 nome,
                 email,
@@ -93,7 +96,6 @@ const pacienteController = {
                 psicologos_id 
             });
             
-            const psicologos = await Psicologos.findByPk(psicologos_id);
             await novoPaciente.setPsicologos(psicologos);
             
             
