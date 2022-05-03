@@ -6,7 +6,7 @@ const psicologosController = {
         try {
             const psicologos = await Psicologos.findAll({
                 include: Paciente,
-                attributes: ['nome', 'email', 'apresentacao']
+                attributes: ['id', 'nome', 'email', 'apresentacao']
             });
             res.status(200).json(psicologos);
         } catch (error) {
@@ -19,7 +19,7 @@ const psicologosController = {
             const { id } = req.params;
             const psicologoId = await Psicologos.findByPk(id, {
                 include: Paciente,
-                attributes: ['nome', 'email', 'apresentacao']
+                attributes: ['id', 'nome', 'email', 'apresentacao']
             });
             if (psicologoId == null) {
                 return res.status(404).json('Id não encontrado');
@@ -76,6 +76,12 @@ const psicologosController = {
     async deletarPsicologo(req, res) {
         try {
             const { id } = req.params;
+            const psicologoId = await Psicologos.findByPk(id);
+
+            if (psicologoId == null) {
+                return res.status(404).json('Id não encontrado');
+            }
+
             await Psicologos.destroy({
                 where: {
                     id,
@@ -83,7 +89,7 @@ const psicologosController = {
             });
             res.json("Psicologo Deletado com sucesso");
         } catch (error) {
-
+            return res.json("Psicologo não encontrado.");
         }
     }
 

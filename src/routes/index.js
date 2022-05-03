@@ -10,7 +10,7 @@ const authLoginValidation = require('../validations/auth/login');
 
 const routes = express.Router();
 
-routes.get('/pacientes', auth, pacienteController.paginacaoBuscarPacientes);
+routes.get('/pacientes', auth, pacienteController.buscarPacientes);
 routes.get('/pacientes/:id',auth, pacienteController.buscarPacienteId);
 routes.post('/pacientes', auth, pacienteCadastroValidation, pacienteController.cadastrarPaciente);
 routes.put('/pacientes/:id', auth, pacienteController.atualizarPaciente);
