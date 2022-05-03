@@ -22,7 +22,7 @@ observando os dados que constituem a 3 entidades do sistema:</h3><br>
 
 <p>Se atentar corretamente a criação das relações das entidades</p><br>
 <h1>FUNCIONALIDADES OBRIGATÓRIAS</h1><br>
-<h2>1. Login<h2><br>
+<h2>1. Login</h2><br>
 <p>O sistema deve permitir autenticação dos psicólogos para acessar a plataforma.
 Os dados de autenticação devem ser um e-mail válido e uma senha(mínimo 6
 caracteres). As informações de autenticação devem ser criadas no mesmo
