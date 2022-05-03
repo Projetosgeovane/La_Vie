@@ -1,5 +1,5 @@
 const { Paciente, Psicologos } = require('../model/');
-const authController = require('../controller/authController');
+
 
 const pacienteController = {
 
@@ -84,23 +84,20 @@ const pacienteController = {
     async cadastrarPaciente(req, res) {
         try {
             const { nome, email, idade, psicologos_id } = req.body;
-          
-            const psicologos = await Psicologos.findByPk(psicologos_id);
-            if(!psicologos){
-                return res.status(400).json('id do psicologo não encontrado');
-            }
             const novoPaciente = await Paciente.create({
                 nome,
                 email,
                 idade,
-                psicologos_id 
+                psicologos_id
             });
             
-            await novoPaciente.setPsicologos(psicologos);
-            
-            
 
-            return res.status(201).json(novoPaciente);
+            
+            const psicologos = await Psicologos.findByPk(psicologos_id);
+            await novoPaciente.setPsicologos(psicologos);
+
+
+            return res.status(201).json(nome);
 
 
 

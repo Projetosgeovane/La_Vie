@@ -24,7 +24,7 @@ routes.delete('/psicologos/:id', psicologosController.deletarPsicologo);
 
 routes.get('/atendimentos', atendimentoController.buscarAtendimento);
 routes.get('/atendimentos/:id', atendimentoController.buscarAtendimentoId);
-routes.post('/atendimentos', atendimentoController.cadastrarAtendimento);
+routes.post('/atendimentos',auth, atendimentoController.cadastrarAtendimento);
 routes.delete('/atendimentos/:id', atendimentoController.deletarAtendimento);
 
 routes.post('/login', authLoginValidation, authController.login)
