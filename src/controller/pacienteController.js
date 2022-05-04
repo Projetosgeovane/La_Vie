@@ -9,11 +9,12 @@ const pacienteController = {
         try {
 
             const pacientes = await Paciente.findAll({
-                include: {
-                    model: Psicologos,
-                    attributes: ['id', 'nome', 'email', 'apresentacao'],
-                },
-
+                include: [
+                    {
+                        model: Psicologos,
+                        attributes: ['id', 'nome', 'email', 'apresentacao'],
+                    }
+                ],
 
 
             });
@@ -74,13 +75,7 @@ const pacienteController = {
         }
     },
 
-    async buscarIdPsicologo(req, res) {
-        const { id } = req.params
-        const teste = await Psicologos.findAll();
-        res.json(teste);
-        console.log(id);
 
-    },
     async cadastrarPaciente(req, res) {
         try {
             const { nome, email, idade, psicologos_id } = req.body;
@@ -88,16 +83,16 @@ const pacienteController = {
                 nome,
                 email,
                 idade,
-                psicologos_id
+                psicologos_id: req.auth.id
             });
-            
+            console.log(req.auth);
 
-            
+
             const psicologos = await Psicologos.findByPk(psicologos_id);
             await novoPaciente.setPsicologos(psicologos);
 
 
-            return res.status(201).json(nome);
+            return res.status(201).json(novoPaciente);
 
 
 
