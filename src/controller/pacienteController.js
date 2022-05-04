@@ -1,61 +1,39 @@
-const { Paciente, Psicologos } = require('../model/');
+const { Paciente, Psicologos, PacientePsicologos } = require('../model/');
+const { Op } = require('sequelize');
 
 
 const pacienteController = {
 
-
-
-    async buscarPacientes(req, res) {
+    async paginacaoBuscarPacientes(req, res) {
         try {
+            const { termo, page = 1, limit = 99999999999999999 } = req.query;
+            const offset = parseInt(limit) * (parseInt(page) - 1);
 
-            const pacientes = await Paciente.findAll({
+            const filter = {
+                limit: parseInt(limit),
+                offset,
                 include: [
                     {
                         model: Psicologos,
                         attributes: ['id', 'nome', 'email', 'apresentacao'],
                     }
                 ],
+            };
 
+            if (termo) {
+                Object.assign(filter, {
+                    where: {
+                        nome: { [Op.substring]: termo }
+                    },
+                })
+            }
 
-            });
-
-            return res.status(200).json(pacientes);
+            const paginacaoPacientes = await Paciente.findAll(filter)
+            return res.status(200).json(paginacaoPacientes);
         } catch (error) {
-            return res.status(404).json('Falha ao buscar lista de pacientes');
+            return res.status(400).json('Falha ao buscar lista de pacientes');
         }
     },
-
-    // async paginacaoBuscarPacientes(req, res) {
-    //     try {
-    //         const { termo, page , limit  } = req.query;
-    //         const offSet = parseInt(limit) * (parseInt(page) - 1);
-
-    //         let filter = {
-    //             limit: parseInt(limit),
-    //             offSet,
-    //             include: Psicologos,
-
-
-    //         }
-
-    //         // if (termo) {
-    //         //     Object.assign(filter, {
-    //         //         where: {
-    //         //             // person_name: { [Op.like]: `%${termo}%´ }  // Equivalente ao código da linha 11
-    //         //             nome: { [Op.substring]: termo }
-    //         //         },
-    //         //     })
-    //         // }
-
-
-
-
-    //         const paginacaoPacientes = await Paciente.findAll(filter)
-    //         return res.json(paginacaoPacientes);
-    //     } catch (error) {
-
-    //     }
-    // },
 
     async buscarPacienteId(req, res) {
         try {
@@ -66,10 +44,12 @@ const pacienteController = {
                     attributes: ['id', 'nome', 'email', 'apresentacao'],
                 },
             });
+
             if (pacienteId == null) {
                 return res.status(404).json('Id não encontrado');
             }
-            res.json(pacienteId);
+
+            res.status(200).json(pacienteId);
         } catch (error) {
             return res.status(404).json('Id não encontrado');
         }
@@ -82,8 +62,7 @@ const pacienteController = {
             const novoPaciente = await Paciente.create({
                 nome,
                 email,
-                idade,
-                psicologos_id: req.auth.id
+                idade
             });
 
 
@@ -121,7 +100,7 @@ const pacienteController = {
             if (atualizarPaciente == null) {
                 return res.status(404).json('Id não encontrado');
             }
-            return res.json(atualizarPaciente);
+            return res.status(200).json(atualizarPaciente);
         } catch (error) {
             return res.status(400).json('Falha ao atualizar paciente');
         }

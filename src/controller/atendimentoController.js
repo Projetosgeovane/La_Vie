@@ -1,25 +1,46 @@
 const { Atendimentos, Paciente, Psicologos } = require('../model/');
+const { Op } = require('sequelize');
 
 
 
 const atendimentoController = {
 
-    async buscarAtendimento(req, res) {
+    async paginacaoBuscarAtendimentos(req, res) {
         try {
-            const atendimentos = await Atendimentos.findAll({
-                include: [Paciente, Psicologos]
-                
-            });
-            res.json(atendimentos);
+            const { termo, page = 1, limit = 99999999999999999 } = req.query;
+            const offset = parseInt(limit) * (parseInt(page) - 1);
+
+            const filter = {
+                limit: parseInt(limit),
+                offset,
+                include: [{
+                    model: Psicologos,
+                    attributes: ['id', 'nome', 'email', 'apresentacao']
+                },
+            {
+                model: Paciente
+            }]
+            };
+
+            if (termo) {
+                Object.assign(filter, {
+                    where: {
+                        data_atendimento: { [Op.substring]: termo }
+                    },
+                })
+            }
+
+            const paginacaoAtendimentos = await Atendimentos.findAll(filter)
+            return res.status(200).json(paginacaoAtendimentos);
         } catch (error) {
-            console.error('Erro de busca');
+            return res.status(500).json('Falha ao buscar lista de atendimentos');
         }
     },
 
     async buscarAtendimentoId(req, res) {
         try {
             const { id } = req.params;
-            const atendimentos = await Atendimentos.findByPk(id,{
+            const atendimentos = await Atendimentos.findByPk(id, {
                 include: [Paciente, Psicologos]
             });
             if (atendimentos == null) {
@@ -27,14 +48,13 @@ const atendimentoController = {
             }
             res.json(atendimentos);
         } catch (error) {
-            console.error('Id não encontrado');
-            res.status(404);
+            return res.status(404).json('Id não encontrado');
         }
     },
 
     async cadastrarAtendimento(req, res) {
         try {
-            const { data_atendimento, observacao, paciente_id} = req.body;
+            const { data_atendimento, observacao, paciente_id } = req.body;
             const novoAtendimento = await Atendimentos.create({
                 data_atendimento,
                 observacao,
@@ -43,7 +63,7 @@ const atendimentoController = {
 
             });
 
-            
+
             return res.status(201).json(novoAtendimento)
 
         } catch (error) {
@@ -62,7 +82,7 @@ const atendimentoController = {
                 }
             });
 
-            res.status(204).json("Atendimento Deletado");
+            return res.status(204)
         } catch (error) {
 
         }

@@ -1,16 +1,35 @@
 const bcryptjs = require('bcryptjs');
 const { Psicologos, Paciente } = require('../model/');
+const { Op } = require('sequelize');
 
 const psicologosController = {
-    async buscarPsicologos(req, res) {
+
+    async paginacaoBuscarPsicologos(req, res) {
         try {
-            const psicologos = await Psicologos.findAll({
+            const { termo, page = 1, limit = 99999999999999999 } = req.query;
+            const offset = parseInt(limit) * (parseInt(page) - 1);
+
+            const filter = {
+                limit: parseInt(limit),
+                offset,
                 include: Paciente,
-                attributes: ['id', 'nome', 'email', 'apresentacao']
-            });
-            res.status(200).json(psicologos);
+                attributes: ['id','nome','email','apresentacao']
+                    
+                
+            };
+
+            if (termo) {
+                Object.assign(filter, {
+                    where: {
+                        nome: { [Op.substring]: termo }
+                    },
+                })
+            }
+
+            const paginacaoPsicologos = await Psicologos.findAll(filter)
+            return res.status(200).json(paginacaoPsicologos);
         } catch (error) {
-            return res.status(404).json('Falha ao buscar lista de psicologos');
+            return res.status(400).json('Falha ao buscar lista de psicólogos');
         }
     },
 
@@ -26,7 +45,7 @@ const psicologosController = {
             }
             res.json(psicologoId);
         } catch (error) {
-            return res.status(404).json('Id não encontrado');
+            return res.status(400).json('Id não encontrado');
         }
     },
 
@@ -43,7 +62,7 @@ const psicologosController = {
 
             return res.status(201).json(novoPsicologo);
         } catch (error) {
-            return res.status(400).json('Falha ao cadastrar psicologo');
+            return res.status(400).json('Falha ao cadastrar psicólogo');
         }
     },
 
@@ -69,7 +88,7 @@ const psicologosController = {
             res.status(201).json(psicologoAtualizado);
 
         } catch (error) {
-
+            return res.status(400).json('Falha ao atualizar psicólogo');
         }
     },
 
@@ -87,9 +106,9 @@ const psicologosController = {
                     id,
                 }
             });
-            res.json("Psicologo Deletado com sucesso");
+            return res.status(204);
         } catch (error) {
-            return res.json("Psicologo não encontrado.");
+            return res.status(400);
         }
     }
 
