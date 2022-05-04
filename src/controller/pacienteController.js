@@ -78,17 +78,16 @@ const pacienteController = {
 
     async cadastrarPaciente(req, res) {
         try {
-            const { nome, email, idade, psicologos_id } = req.body;
+            const { nome, email, idade } = req.body;
             const novoPaciente = await Paciente.create({
                 nome,
                 email,
                 idade,
                 psicologos_id: req.auth.id
             });
-            console.log(req.auth);
 
 
-            const psicologos = await Psicologos.findByPk(psicologos_id);
+            const psicologos = await Psicologos.findByPk(req.auth.id);
             await novoPaciente.setPsicologos(psicologos);
 
 
@@ -150,5 +149,7 @@ const pacienteController = {
     }
 
 }
+
+
 
 module.exports = pacienteController;
