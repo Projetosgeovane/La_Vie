@@ -6,7 +6,7 @@ const psicologosController = {
 
     async paginacaoBuscarPsicologos(req, res) {
         try {
-            const { termo, page = 1, limit = 99999999999999999 } = req.query;
+            const { termo, page = 1, limit = 10 } = req.query;
             const offset = parseInt(limit) * (parseInt(page) - 1);
 
             const filter = {
