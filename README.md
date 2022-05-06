@@ -147,7 +147,7 @@ assim como os dados que devem ser passados na requisição e o que será
 devolvido pelo servidor como resposta.<br>
 Para isso pode ser usado o Insomnia junto com o plugin Export HTML
 Documentation (Ensinado do material assíncrono), ou o postman.<p><br>
-  <a>https://documenter.getpostman.com/view/20767148/UyrGBZTv</a>
+  https://documenter.getpostman.com/view/20767148/UyrGBZTv
 <h2>FUNCIONALIDADE OPCIONAL</h2>
 <h3>Dashboard</h3><br>
 <p>Deverá ser criados um grupo de endpoints a partir da rota /dashboard para cada tipo de
