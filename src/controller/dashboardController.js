@@ -5,24 +5,22 @@ const dashboardController = {
 
     async buscarNumeroPacientes(req, res) {
         const numeroPacientes = await Paciente.count()
-        return res.json(`Numero de Pacientes = ${numeroPacientes}`);
+        return res.json(numeroPacientes);
     },
 
     async buscarNumeroPsicologos(req, res) {
         const numeroPsicologos = await Psicologos.count();
-        return res.json(`Numero de Psicologos = ${numeroPsicologos}`);
+        return res.json(numeroPsicologos);
     },
     async buscarNumeroAtendimentos(req, res) {
         const numeroAtendimentos = await Atendimentos.count();
-        return res.json(`Numero de Atendimentos = ${numeroAtendimentos}`);
+        return res.json(numeroAtendimentos);
     },
     async buscarMediaAtendimentos(req, res) {
-        const mediaAtendimentos = await Atendimentos.findAll({
-            attributes: ['id', [Atendimentos.sequelize.fn('AVG', Atendimentos.sequelize.col('id')), 'ratingAvg']],
-            group: ['id']
-        });
+        const numeroAtendimentos = await Atendimentos.count();
+        const numeroPsicologos = await Psicologos.count();
 
-        return res.json(`Numero de Atendimentos = ${mediaAtendimentos}`);
+        return res.json(numeroAtendimentos/numeroPsicologos);
     }
 }
 

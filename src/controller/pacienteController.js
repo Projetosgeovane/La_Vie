@@ -6,7 +6,7 @@ const pacienteController = {
 
     async paginacaoBuscarPacientes(req, res) {
         try {
-            const { termo, page = 1, limit = 99999999999999999 } = req.query;
+            const { termo, page = 1, limit = 10 } = req.query;
             const offset = parseInt(limit) * (parseInt(page) - 1);
 
             const filter = {
@@ -16,8 +16,9 @@ const pacienteController = {
                     {
                         model: Psicologos,
                         attributes: ['id', 'nome', 'email', 'apresentacao'],
-                    }
+                    },
                 ],
+
             };
 
             if (termo) {
@@ -121,7 +122,7 @@ const pacienteController = {
                 }
             });
 
-            return res.status(204).json("Paciente Deletado");
+            return res.status(204).json();
         } catch (error) {
             return res.status(404).json('id não encontrado');
         }
